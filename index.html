@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>SONA - 苏拉</title>
+	<style>
+		h1 {
+			font-size: 1cm;
+			display: inline;
+		}
+
+		* {
+			padding: 0;
+			margin: 0;
+			position: relative;
+		}
+
+		body {
+			padding: 5%;
+		}
+	</style>
+	<script type="text/javascript">
+		"use strict";
+		function jump(node) {
+			var url = node.getElementsByTagName("input")[0].value;
+			if (url.slice(0, 7) !== "http://" && url.slice(0, 8) !== "https://") url = "http://" + url;
+			node.action = "turn.php?" + url;
+		}
+	</script>
+</head>
+
+<body>
+	<img src="/logo.png" /><br />
+	<h1>欶那</h1>
+	<b> - 在线代理</b>
+	<br />SONA: Simple Online Network Agent
+	<br /><br />
+	<hr color="#000000" />
+	<br /><br />
+	欢迎使用<b>馊辣</b>。<br />
+	<br />
+	本工具是由个人开发的<br />
+	完全免费的在线网络代理工具。<br />
+	<br />
+	您可以在不连接其他任何网站、<br />
+	不借助其他任何工具的情况下，<br />
+	通过访问本代理工具<br />
+	畅爽浏览各大网站，<br />
+	体验自由网上冲浪的绝妙感觉。<br />
+	<br />
+	<a href="turn.php?https://www.baidu.com/">
+		即刻开始网上冲浪
+	</a><br /><br />
+	或者
+	<br /><br />
+	输入要访问的网址：<br />
+	<form action="" method="post" onsubmit="return jump(this);">
+	<input />
+	<input type="submit" value="走你" />
+	</form>
+	<br />
+	<hr color="#000000" style="width: 5em;" /><br />
+	本项目遵守GPL3.0开源协议。<br />
+	<a href="https://github.com/E0SelmY4V/sona">GitHub上的嗖蜡</a><br />
+	<br />
+	<a href="support.html" style="position: fixed;bottom: 1em;right: 1em;">赞助本站</a>
+</body>
+
+</html>
