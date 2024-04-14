@@ -55,7 +55,7 @@
 
 1. 克隆本仓库到你的网站文件夹下。比如`/website/sona`。
 2. 假如你的网站一级域名为`xxx.com`，修改apache的配置，增加以下语句
-   ```
+   ```apacheconf
    <VirtualHost *:80>
    	ServerName sona.xxx.com
    	DocumentRoot /website/sona
@@ -133,7 +133,7 @@
 
 真是荒唐！新的url比之前长太多了，好像根本没有用处。这个时候就可以用url重写这一伟大的工具。只需要在`api`文件夹下创建文件`.htaccess`，然后添加几句话：
 
-```
+```apacheconf
 <IfModule mod_rewrite.c>
   Options +FollowSymlinks -Multiviews
   RewriteEngine On
@@ -191,7 +191,7 @@
 #### 示例
 
 伪装成其他网站需要用户在hosts上动手脚。假如我们想访问`https://pixiv.net/artworks/76724192/`，而且代理服务器的ip是`123.456.789.10`，那么我们需要在hosts中加上这么一句：
-```
+```hosts
 123.456.789.10 pixiv.net
 ```
 这样子我们去访问`https://pixiv.net/artworks/76724192/`时，连接的就是代理服务器了。代理服务器如何请求源网站呢？可以通过获取用户当前的主机名，在本例中就是`pixiv.net`；再通过伪静态获取用户访问的目录，本例中就是`artworks/76724192/`，然后拼到一起，就获得了源网址。
