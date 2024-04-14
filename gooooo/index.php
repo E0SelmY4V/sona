@@ -1,22 +1,25 @@
 <?php
 
-require '../http-head.php';
-require '../lib.php';
+require '../lib/http-head.php';
+require '../lib/main.php';
+
+include('../lib/script.html');
+die();
 
 // 初始化
 $ch = curl_init($req_url = myurl_decode());
 
 // 伪造请求头
-$hdr = [
-	"CLIENT-IP: {$_SERVER['REMOTE_ADDR']}",
-	"X-FORWARDED-FOR: {$_SERVER['REMOTE_ADDR']}",
-	'Accept-Encoding: gzip',
-];
-foreach (getallheaders() as $k => $v) if (empty(REQ_DENY_HEADER[$k])) $hdr[] = "{$k}: {$v}";
-curl_setopt($ch, CURLOPT_HTTPHEADER, $hdr);
 $host = substr($req_url, strpos($req_url, '://') + 3);
 if (($pos = strpos($host, '/')) !== false) $host = substr($host, 0, $pos);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: ' . $host]); // 伪造主机
+$hdr = [
+	"Client-Ip: {$_SERVER['REMOTE_ADDR']}",
+	"X-Forwarded-For: {$_SERVER['REMOTE_ADDR']}",
+	'Accept-Encoding: gzip',
+	"Host: $host",
+];
+foreach (getallheaders() as $k => $v) if (empty(REQ_DENY_HEADER[strtolower($k)])) $hdr[] = "$k: $v";
+curl_setopt($ch, CURLOPT_HTTPHEADER, $hdr);
 
 // 获取请求数据
 if ($_POST) {
@@ -44,16 +47,20 @@ header(array_shift($hdr)); // HTTP/xxx响应头
 $jed = true;
 $enc = false;
 foreach ($hdr as $h) {
-	$n = substr($h, 0, strpos($h, ':'));
-	if ($jed && $n === 'Content-Encoding' && strpos($h, 'gzip') !== false) $enc = true && $jed = false;
+	$n = strtolower(substr($h, 0, strpos($h, ':')));
+	if ($jed && $n === 'content-encoding' && strpos($h, 'gzip') !== false) $enc = true and $jed = false;
 	if (isset(RESP_ACCEPT_HEADER[$n])) header($h);
 }
 
 $data = substr($data, $size); // 获取身体
 if ($enc) $data = gzdecode($data); // 如果被gzip加密则解密
-$type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE); // 获取mime类型
+$type = strtolower(curl_getinfo($ch, CURLINFO_CONTENT_TYPE)); // 获取mime类型
+header("Content-type: $type");
 
-// 改https为http
+// 如果是html，注入脚本
+if (strpos($type, 'text/html') !== false) include '../lib/script.html';
+
+// 替换url
 foreach ([
 	'image' => false,
 	'text' => true,

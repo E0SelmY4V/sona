@@ -14,16 +14,16 @@ const RESP_DENY_HEADER = array(
 /**用户应收到的响应头 */
 const RESP_ACCEPT_HEADER = array(
 	// 'Date' => true,
-	'Content-Type' => true,
-	'Connection' => true,
-	'Vary' => true,
-	'X-Host-Time' => true,
-	'X-XSS-Protection' => true,
-	'Set-Cookie' => true,
-	'Expires' => true,
-	'Cache-Control' => true,
-	'Pragma' => true,
-	'X-Frame-Options' => true,
+	'content-type' => true,
+	'connection' => true,
+	'vary' => true,
+	'x-host-time' => true,
+	'x-xss-protection' => true,
+	'set-cookie' => true,
+	'expires' => true,
+	'cache-control' => true,
+	'pragma' => true,
+	'x-frame-options' => true,
 	// 'CF-RAY' => true,
 	// 'Server' => true,
 	// 'CF-Cache-Status' => true,
@@ -31,9 +31,9 @@ const RESP_ACCEPT_HEADER = array(
 
 /**脚本不应发送的请求头 */
 const REQ_DENY_HEADER = array(
-	'Accept-Encoding' => true,
-	'X-Rewrite-Url' => true,
-	'Host' => true,
+	'accept-encoding' => true,
+	'x-rewrite-url' => true,
+	'host' => true,
 );
 
 /**脚本应发送的请求头 */

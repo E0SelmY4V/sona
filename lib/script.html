@@ -1,0 +1,73 @@
+<script type="text/javascript">
+	"use strict";
+	(function () {
+		var myDmn = location.host.split(".");
+		var myPre = myDmn[0];
+		myDmn = myDmn.slice(-2).join(".");
+		var myurl = {
+			encode: function (url) {
+				url = url.replace("://", ".");
+				var pos = url.indexOf("/");
+				var dmn = url.slice(0, pos);
+				var uri = url.slice(pos);
+				if (dmn.indexOf(":") !== -1) dmn = dmn.replace(":", ".");
+				return location.protocol + "//" + myPre + "." + dmn + "." + myDmn + uri;
+			}
+		};
+		var hostname = location.hostname.split(".");
+		hostname = hostname.slice(1, -2);
+		var protocol = hostname.shift() + ":";
+		var port = hostname.pop();
+		if (String(parseInt(port)) !== port) hostname.push(port), port = "";
+		hostname = hostname.join(".");
+		var host = hostname + (port ? ":" + port : "");
+		var origin = protocol + "//" + host;
+		var href = origin + location.pathname + location.search + location.hash;
+		function test(n) {
+			var url = n, p = n.indexOf("//");
+			if (p === -1) url = "http://" + url;
+			else if (p === 0) n = n.slice(2), url = protocol + url;
+			else n = n.slice(p + 2);
+			if ((p = n.indexOf("/")) === -1) url = url + "/";
+			else n = n.slice(0, p);
+			var t = n.split(".");
+			return t.slice(-2).join(".") !== myDmn || t[0] !== myPre ? myurl.encode(url) : url;
+		}
+		window.laoction = {
+			reload: location.reload,
+			hash: location.hash,
+			pathname: location.pathname,
+			search: location.search,
+			assign: function (n) {
+				return location.assign(test(n));
+			},
+			replace: function (n) {
+				return location.replace(test(n));
+			},
+			toString: function () {
+				return this.href;
+			},
+			valueOf: function () {
+				return this.href;
+			},
+			hostname: hostname,
+			protocol: protocol,
+			port: port,
+			host: host,
+			origin: origin,
+			get href() {
+				return href;
+			},
+			set href(n) {
+				location.href = test(n);
+			}
+		};
+		function log() {
+			console.log(new Error().stack);
+		}
+		Object.defineProperty(window, 'pixiv', {set: log})
+		Object.defineProperty(document, 'cookie', {set: log})
+		var nodeself = document.getElementsByTagName("script")[0];
+		nodeself.parentNode.removeChild(nodeself);
+	})();
+</script>

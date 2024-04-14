@@ -1,5 +1,7 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+
 /**本机使用的协议 */
 const HEAD = 'http';
 
@@ -9,25 +11,42 @@ $my_dmn = array(array_pop($my_dmn), array_pop($my_dmn));
 $my_dmn = "{$my_dmn[1]}.{$my_dmn[0]}";
 
 /**
+ * 获取长url替换数组
+ * @param string $url 当前访问url
+ * @return array 替换数组
+ */
+function rep_longUrl($url)
+{
+	global $my_dmn;
+	$rslt = [
+		'http://' => HEAD . "://sona.$my_dmn/turn.php?http://",
+		'https://' => HEAD . "://sona.$my_dmn/turn.php?https://",
+		'"//' => '"' . HEAD . "://sona.$my_dmn/$url/",
+		'\'//' => '\'' . HEAD . "://sona.$my_dmn/$url/",
+	];
+	foreach ($rslt as $before => $after) $rslt[str_replace('/', '\/', $before)] = str_replace('/', '\/', $after);
+	return $rslt;
+}
+
+/**脚本替换数组 */
+$rep_script = [
+	// 'location' => 'laoction',
+];
+
+/**
  * 获取替换数组
  * @param string $url 当前访问url
  * @return array 两个数组，分别为要替换的和替换成的
  */
-function get_reparr($url) {
-	global $my_dmn;
+function get_reparr($url)
+{
+	global $rep_longUrl, $rep_script;
 	$url = substr($url, 0, strpos($url, '://'));
-	$arr = [[
-		'http://',
-		'https://',
-		'"//',
-		'\'//',
-	], [
-		HEAD . "://sona.$my_dmn/turn.php?http://",
-		HEAD . "://sona.$my_dmn/turn.php?https://",
-		'"' . HEAD . "://sona.$my_dmn/$url/",
-		'\'' . HEAD . "://sona.$my_dmn/$url/",
-	]];
-	for ($i = 0; $i < 2; $i++) foreach ($arr[$i] as $value) $arr[$i][] = str_replace('/', '\/', $value);
+	$arr = [[], []];
+	foreach ([
+		rep_longUrl($url),
+		$rep_script,
+	] as $group) foreach ($group as $before => $after) list($arr[0][], $arr[1][]) = [$before, $after];
 	return $arr;
 }
 
